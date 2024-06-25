@@ -1,0 +1,73 @@
+/* print.css */
+
+/* Hide all elements by default */
+body * {
+    visibility: hidden;
+}
+
+/* Make modal content and its children visible */
+.modal-content, .modal-content * {
+    visibility: visible;
+}
+
+/* Position modal content relative to the page */
+.modal-content {
+    position: fixed; /* Adjust positioning as needed */
+    left: 50%; /* Center horizontally */
+    top: 50%; /* Center vertically */
+    transform: translate(-50%, -50%); /* Center modal */
+    z-index: 1000; /* Ensure modal is on top */
+    background-color: #fff; /* White background */
+    box-shadow: 0 0 10px rgba(0,0,0,0.5); /* Shadow for modal */
+    padding: 20px; /* Padding around modal content */
+    max-width: 90%; /* Adjust width as needed */
+}
+
+/* Adjust modal content styles as per your design */
+.modal-content h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.modal-content p {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.modal-content img {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 15px;
+}
+
+/* Example of hiding specific elements except modal content */
+.modal-content .header, .modal-content .footer {
+    display: none; /* Hide header and footer */
+}
+
+/* Example of styling buttons within modal */
+.modal-content button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+/* Example of additional styles specific to modal */
+@media print {
+    .modal-content {
+        position: static; /* Ensure modal appears in print */
+        box-shadow: none; /* Remove shadow in print */
+        padding: 0; /* No padding in print */
+        border: none; /* No border in print */
+        max-width: 100%; /* Ensure full width in print */
+    }
+    
+    .modal-content img {
+        max-width: 100%; /* Ensure images fit in print */
+    }
+}

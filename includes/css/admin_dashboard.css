@@ -1,0 +1,31 @@
+.dashboard-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+gap: 20px;
+margin-bottom: 45px;
+}
+
+.big-box {
+padding: 20px;
+box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+}
+
+.light-box {
+background-color: #ffd95a;
+color: #4c3d3d;
+}
+
+.medium-box {
+background-color: #c07f00;
+color: #4c3d3d;
+}
+
+.shadow-box {
+background-color: #7f5400;
+color: #ffd95a;
+}
+
+.dark-box {
+background-color: #4c3d3d;
+color: white;
+}

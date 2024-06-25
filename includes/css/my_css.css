@@ -1,0 +1,178 @@
+body {
+    background-color: #FFF7D4;
+}
+
+.my-wrapper {
+	padding: 20px;
+}
+
+.nav-link:hover {
+	color: #4C3D3D;
+	background-color: #FFD95A;
+}
+
+.nav-link {
+    color: #4C3D3D;
+}
+
+.nav-link.active {
+    color: white;
+    background-color: pink;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+
+.wrapper {
+    width: 400px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 3px 3px 36px rgba(0,0,0,0.2);
+}
+
+.wrapper .title{
+    color: black;
+    line-height: 65px;
+    text-align: center;
+    background: #FFC000;
+    font-size: 25px;
+    font-weight: 500;
+    border-radius: 4px 4px 0 0;
+}
+
+.wrapper .box {
+    padding: 20px;
+    background: #fff;
+    border-radius: 10px;
+}
+
+.wrapper .box label {
+    display: flex;
+    height: 53px;
+    width: 100%;
+    align-items: center;
+    border: 1px solid lightgrey;
+    border-radius: 5px;
+    margin: 10px 0;
+    padding-left: 11px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.wrapper .box input[type="radio"]:checked + label {
+    /*background: #9C27B0;
+    border-color: #9C27B0;*/
+    background: #FFC000;
+    border-color: #FFC000;
+}
+
+.wrapper .box input[type="radio"]:checked + label .select-dots {
+    background: #fff;
+}
+
+.wrapper .box input[type="radio"]:checked + label .select-dots::before {
+    background: #FFC000;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.wrapper .box input[type="radio"]:checked + label .text {
+/*    color: #fff;*/
+color: black;
+}
+
+.wrapper .box label .select-dots {
+    height: 20px;
+    width: 20px;
+    background: #d9d9d9;
+    border-radius: 50%;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.wrapper .box label .select-dots::before {
+    position: absolute;
+    content: "";
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(2);
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.wrapper .box input[type="radio"] {
+    display: none;
+}
+
+.wrapper .box label .text {
+    color: #333;
+    font-size: 18px;
+    font-weight: 400;
+    margin-left: 10px;
+    transition: color 0.3s ease;
+}
+
+.btn-mydark {
+    color: white;
+    background-color: #4C3D3D;
+}
+
+.btn-mydark:hover {
+    color: #4C3D3D;
+    background-color: white;
+}
+
+.btn-mydark:click {
+   color: #4C3D3D;
+   background-color: white;   
+}
+
+.btn-myshadow {
+    color: white;
+    background-color: #C07F00;
+}
+
+.btn-myshadow:hover {
+    color: #C07F00;
+    background-color: white;
+}
+
+.btn-myshadow:click {
+    color: #C07F00;
+    background-color: white;
+}
+
+.btn-mymedium {
+    color: #C07F00;
+    background-color: #FFD95A;
+}
+
+.btn-mymedium:hover {
+    color: #FFD95A;
+    background-color: #C07F00;
+}
+
+.btn-mymedium:click {
+    color: #FFD95A;
+    background-color: #C07F00;
+}
+
+.btn-mylight {
+    color: #4C3D3D;
+    background-color: #FFF7D4;
+}
+
+.btn-mylight:hover {
+    color: #FFF7D4;
+    background-color: #4C3D3D;
+}
+
+.btn-mylight:click {
+    color: #FFF7D4;
+    background-color: #4C3D3D;
+}
+
+.bg-blue-light {
+    color: ;
+}
