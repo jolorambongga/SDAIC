@@ -109,7 +109,10 @@ include_once "header.php";
             </div>
             <div class="modal-body">
               <label for="reject_user_input" class="form-label">Type <b>REJECT</b> to reject <span id="rejectPatientName"></span>'s <span id="rejectAppointmentName"></span> appointment.</label>
-              <input type="text" id="reject_user_input" class="form-control" required="">
+              <input type="text" id="reject_user_input" class="form-control" required><pre></pre>
+
+              <label for="reject_reason" class="form-label">Reason of Rejection</label>
+              <input type="text" id="reject_reason" class="form-control" required>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -417,12 +420,14 @@ include_once "header.php";
       $(document).on('click', '#btnReject', function() {
         var appointment_id = $(this).data('appointment-id');
         var status = "REJECTED";
-        var user_input = $('#reject_user_input').val('');
+        var user_input = $('#reject_user_input').val();
+        var reason = $('#reject_reason').val();
 
         var data = {
           appointment_id: appointment_id,
           status: status,
-          user_input: user_input
+          user_input: user_input,
+          reason: reason
         }
 
         console.log(appointment_id, user_input);
@@ -430,6 +435,11 @@ include_once "header.php";
         if (user_input !== 'REJECT') {
           alert('Please type REJECT to reject.');
           console.log(appointment_id);
+          return;
+        }
+
+        if (!reason) {
+          alert('Please type the reason of rejection');
           return;
         }
         $.ajax({

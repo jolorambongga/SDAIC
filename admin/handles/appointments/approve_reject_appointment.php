@@ -13,6 +13,7 @@ try {
 	$appointment_id = $_POST['appointment_id'];
 	$status = $_POST['status'];
 	$user_input = $_POST['user_input'];
+	$reason = isset($_POST['reason']) ? "<b>Reason of Rejection:</b> <i>" . $_POST['reason'] . "</i>" : '';
 
 	$sql = "UPDATE tbl_Appointments
 	SET status = :status
@@ -67,7 +68,7 @@ try {
 	$status = $data['status'];
 
 	$approved = "Please come on the date and time provided above. Thank You!";
-	$rejected = "See notes for information as to why it has been rejected, if you have further questions you may inquire through our social media and contacts. You may also try re-applying for an appointment. Thank You!";
+	$rejected = "See notes below for information as to why it has been rejected, if you have further questions you may inquire through our social media and contacts. You may also try re-applying for an appointment. Thank You!";
 
 	if($status === 'APPROVED') {
 		$status_message = $approved;
@@ -146,6 +147,7 @@ try {
 	<br>
 	<p><bold><center>$status_title!</center></bold></p>
 	<p><center>$status_message</center></p>
+	<p><center>$reason</center></p>
 	</div>
 	<div class='footer'>
 	<p>&copy; " . date('Y') . " Sta Maria Diagnostic Clinic. All rights reserved.</p>
