@@ -103,28 +103,44 @@ checkAuth();
         }
 
     function populateTimeOptions(start_time, end_time, duration) {
-        $('#appointment_time').empty(); // Clear existing options
+    $('#appointment_time').empty(); // Clear existing options
 
-        // Convert start_time and end_time to Date objects for comparison
-        var startTime = new Date('1970-01-01T' + start_time);
-        var endTime = new Date('1970-01-01T' + end_time);
+    // Convert start_time and end_time to Date objects for comparison
+    var startTime = new Date('1970-01-01T' + start_time);
+    var endTime = new Date('1970-01-01T' + end_time);
 
-        // Calculate intervals based on duration
-        var interval = duration * 60 * 1000; // Convert duration to milliseconds
-        var currentTime = new Date(startTime); // Start from startTime
+    // Calculate intervals based on duration
+    var interval = duration * 60 * 1000; // Convert duration to milliseconds
+    var currentTime = new Date(startTime); // Start from startTime
 
-        // Populate options until currentTime exceeds endTime
-        while (currentTime <= endTime) {
-            var optionTime = currentTime.getHours() + ':' + ('0' + currentTime.getMinutes()).slice(-2);
-            $('#appointment_time').append($('<option>', {
-                value: optionTime,
-                text: optionTime
-            }));
+    // Format options in 12-hour format with AM/PM
+    var options = [];
+    while (currentTime <= endTime) {
+        var hours = currentTime.getHours();
+        var minutes = ('0' + currentTime.getMinutes()).slice(-2);
+        var ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        hours = hours ? hours : 12; // Handle midnight (0 hours)
+        var optionTime = hours + ':' + minutes + ' ' + ampm;
+        
+        options.push({
+            value: currentTime.toTimeString().slice(0, 5),
+            text: optionTime
+        });
 
-            // Move to next interval
-            currentTime.setTime(currentTime.getTime() + interval);
-        }
+        // Move to next interval
+        currentTime.setTime(currentTime.getTime() + interval);
     }
+
+    // Populate select options
+    options.forEach(function(option) {
+        $('#appointment_time').append($('<option>', {
+            value: option.value,
+            text: option.text
+        }));
+    });
+}
+
 
 // Event handler for updating appointment time options based on date selection
 $(document).on('change', '#appointment_date', function() {
@@ -134,21 +150,54 @@ $(document).on('change', '#appointment_date', function() {
     var day_of_week = getDayOfWeek(selectedDate);
 
     // Fetch relevant time details (start_time, end_time, duration) for selected service_id and date
-    // Assuming these details are available in your response from loadProcedures()
-
     $.ajax({
         type: 'GET',
         url: 'handles/fetch_time.php',
         dataType: 'json',
-        data: { service_id: service_id, day_of_week: day_of_week},
+        data: {
+            service_id: service_id,
+            day_of_week: day_of_week
+        },
         success: function(response) {
             console.log(response);
-            var start_time = response.start_time;
-            var end_time = response.end_time;
-            var duration = response.duration;
+            if (response.status === 'success') {
+                var start_time = response.start_time;
+                var end_time = response.end_time;
+                var duration = response.duration;
 
-            // Populate time options based on fetched details
-            populateTimeOptions(start_time, end_time, duration);
+                // Populate time options based on fetched details
+                populateTimeOptions(start_time, end_time, duration);
+
+                // Fetch existing appointments for the selected date and disable corresponding options
+                $.ajax({
+                    type: 'GET',
+                    url: 'handles/check_appointments.php', // PHP script to fetch existing appointments
+                    dataType: 'json',
+                    data: {
+                        service_id: service_id,
+                        appointment_date: selectedDate
+                    },
+                    success: function(existingAppointments) {
+                        console.log("Existing Appointments:", existingAppointments);
+
+                        // Disable options in #appointment_time based on existing appointments
+                        $('#appointment_time option').each(function() {
+                            var optionValue = $(this).val();
+                            if (existingAppointments.indexOf(optionValue) !== -1) {
+                                $(this).prop('disabled', true);
+                            } else {
+                                $(this).prop('disabled', false);
+                            }
+                        });
+                    },
+                    error: function(error) {
+                        console.log("Error fetching existing appointments:", error);
+                    }
+                });
+
+            } else {
+                alert(response.message); // Handle error or display message
+            }
         },
         error: function(error) {
             console.log("Error fetching time details:", error);
@@ -309,7 +358,7 @@ $(document).on('change', '#appointment_date', function() {
         var service_name = $('#procedure-select option:selected').data('service-name');
         var request_image = $('#request_image')[0].files[0];
         var appointment_date = $('#appointment_date').val();
-        var appointment_time = $('#appointment_time').val();
+        var appointment_time = $('#appointment_time option:selected').text();
 
         $('#review-box').html(`
             <p><strong>Procedure:</strong> ${service_name}</p>
