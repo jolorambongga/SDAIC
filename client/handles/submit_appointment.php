@@ -123,12 +123,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bindParam(':request_image', $request_image, PDO::PARAM_LOB);
 
         if ($stmt->execute()) {
-            echo json_encode(array("status" => "success", "process" => "create appointment"));
+            echo json_encode(array("status" => "success", "process" => "submit_appointment"));
         } else {
-            echo json_encode(array("message" => "else statement reached"));
+            echo json_encode(array("message" => "else_staement_reached"));
         }
     } catch (PDOException $e) {
-        echo json_encode(array("status" => "error" . $e->getMessage()));
+        echo json_encode(array("status" => "error" . $e->getMessage(), "message" => "catch_reached"));
     }
 }
 ?>

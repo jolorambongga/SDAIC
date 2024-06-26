@@ -96,6 +96,20 @@ checkAuth();
 <script>
     $(document).ready(function () {
 
+function formatDate(dateString) {
+    var weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    var date = new Date(dateString);
+    var month = ('0' + (date.getMonth() + 1)).slice(-2); // Adding 1 because getMonth() returns 0-based index
+    var day = ('0' + date.getDate()).slice(-2);
+    var year = date.getFullYear();
+    var dayOfWeek = weekdays[date.getDay()]; // Get day of the week name
+
+    return `${month}-${day}-${year} (${dayOfWeek})`;
+}
+
+
+
+
         function getDayOfWeek(selectedDate) {
             var dateObj = new Date(selectedDate);
             var dayOfWeek = dateObj.toLocaleDateString('en-US', { weekday: 'long' });
@@ -357,7 +371,7 @@ $(document).on('change', '#appointment_date', function() {
     function populateReviewBox() {
         var service_name = $('#procedure-select option:selected').data('service-name');
         var request_image = $('#request_image')[0].files[0];
-        var appointment_date = $('#appointment_date').val();
+        var appointment_date = formatDate($('#appointment_date').val());
         var appointment_time = $('#appointment_time option:selected').text();
 
         $('#review-box').html(`
@@ -384,7 +398,7 @@ $(document).on('change', '#appointment_date', function() {
         formData.append('service_name', service_name);
         formData.append('appointment_date', appointment_date);
         formData.append('appointment_time', appointment_time);
-        formData.append('request_image', request_image);
+        formData.append('request_image', request_image);        
         $.ajax({
             type: 'POST',
             url: 'handles/submit_appointment.php',
@@ -393,12 +407,14 @@ $(document).on('change', '#appointment_date', function() {
             contentType: false,
             processData: false,
             beforeSend: function() {
+                console.log(formData);
                 $('#load_spinner').show();
             },
             success: function(response) {
                 $('#load_spinner').hide();
                 alert('Appointment submitted successfully!');
-                window.location.href = "your_appointments.php";
+                console.log(response);
+                // window.location.href = "your_appointments.php";
             },
             error: function(error) {
                 $('#load_spinner').hide();
