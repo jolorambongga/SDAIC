@@ -2,7 +2,7 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="mod_InputLabel">Generate Receipt for <span id="patient_name"></span> : <span id="service_name"></span></h5>
+        <h5 class="modal-title" id="mod_InputLabel">Generate Receipt for <span id="patient_name"></span> : <span id="service_name"></span> (<span id="service_price"></span>)</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -69,8 +69,10 @@
       console.log($('#price'));
       var patient_name = $('#r_patient_name').val();
       var service_name = $('#r_procedure').val();
+      var service_price = $('#r_price').val();
       $('#patient_name').text(patient_name);
       $('#service_name').text(service_name);
+      $('#service_price').text(service_price);
     });
 
     $(document).on('hidden.bs.modal', '#mod_Input', function () {

@@ -23,6 +23,7 @@ include_once('header.php');
                   <th>Procedure</th>
                   <th>Time</th>
                   <th>Status</th>
+                  <th>Completed</th>
                 </tr>
               </thead>
               <tbody id="currentSched">
@@ -43,6 +44,34 @@ include_once('header.php');
 
   <script>
     $(document).ready(function() {
+      function getStatusColor(status) {
+        switch (status) {
+          case 'PENDING':
+            return '#3399ff';
+          case 'CANCELLED':
+            return '#ff9900';
+          case 'REJECTED':
+            return '#ff0000';
+          case 'APPROVED':
+            return '#009933';
+          case 'undefined':
+            return '#FFC0CB';
+          default:
+            return '#000000';
+        }
+      }
+
+      function getCompletedColor(completed) {
+        switch (completed) {
+          case 'NO':
+            return '#ff0000';
+          case 'YES':
+            return '#009933';
+          default:
+            return '#000000';
+        }
+      }
+
       function loadAppointments() {
         console.log('load appointment function');
         $.ajax({
@@ -63,15 +92,23 @@ include_once('header.php');
               var hasAppointments = false;
 
               appointments.forEach(function(appointment, index) {
-                console.log("REACH FOREACH");
+                // console.log("REACH FOREACH");
                 if (appointment.status === 'APPROVED') {
+                  let statusColor = getStatusColor(appointment.status);
+                  let completedColor = getCompletedColor(appointment.completed);
+                  const isChecked = appointment.completed === 'YES' ? 'checked' : '';
+
                   currentSched.append(`
                     <tr>
                       <td>${currentQueueNumber + 1}</td>
                       <td>${appointment.first_name} ${appointment.last_name}</td>
                       <td>${appointment.service_name}</td>
                       <td>${appointment.formatted_time}</td>
-                      <td>${appointment.status}</td>
+                      <td style="color: ${statusColor};">${appointment.status}</td>
+                      <td style="color: ${completedColor};">
+                        <small class="completed-text">${appointment.completed}</small>
+                        <input type="checkbox" class="complete-checkbox" data-id="${appointment.appointment_id}" ${isChecked}>
+                      </td>
                     </tr>
                   `);
                   currentQueueNumber++;
@@ -82,7 +119,7 @@ include_once('header.php');
               if (!hasAppointments) {
                 currentSched.append(`
                   <tr>
-                    <td colspan="5" class="text-center"><i>No data available</i></td>
+                    <td colspan="6" class="text-center"><i>No data available</i></td>
                   </tr>
                 `);
               }
@@ -97,6 +134,37 @@ include_once('header.php');
           }
         });
       }
+
+      // Function to update appointment status
+      function updateAppointmentCompleted(appointmentId, completed) {
+        $.ajax({
+          url: 'handles/appointments/set_completed_appointment.php',
+          type: 'POST',
+          data: {
+            appointment_id: appointmentId,
+            completed: completed
+          },
+          success: function(response) {
+            if (response.status === 'success') {
+              loadAppointments(); // Reload the appointments to reflect the changes
+            } else {
+              console.error('Error updating appointment:', response.message);
+            }
+          },
+          error: function(error) {
+            console.error('AJAX Error:', error);
+          }
+        });
+      }
+
+      // Event listener for the checkboxes
+      $(document).on('change', '.complete-checkbox', function() {
+          var checkbox = $(this);
+          var isChecked = checkbox.is(':checked');
+          var appointmentId = checkbox.data('id');
+          var completed = isChecked ? 'YES' : 'NO';
+          updateAppointmentCompleted(appointmentId, completed);
+      });
 
       loadAppointments();
       setInterval(loadAppointments, 30000);
