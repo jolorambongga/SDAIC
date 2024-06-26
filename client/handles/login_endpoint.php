@@ -44,6 +44,10 @@ try {
                 echo json_encode(array(
                     "message" => "Password change required. Please change your password.",
                     "status" => "success",
+                    "user_id" => $user['user_id'],
+                    "first_name" => $user['first_name'],
+                    "last_name" => $user['last_name'],
+                    "role_id" => 1,
                     "change_password" => true,
                     "redirect" => "../admin/change_password.php"
                 ));
@@ -56,7 +60,9 @@ try {
                 echo json_encode(array(
                     "message" => "Admin login successful. Welcome, " . $user['first_name'] . " " . $user['last_name'],
                     "status" => "success",
-                    "data" => $user,
+                    "user_id" => $user['user_id'],
+                    "first_name" => $user['first_name'],
+                    "last_name" => $user['last_name'],
                     "role_id" => 1,
                     "redirect" => "../admin/admin_dashboard.php"
                 ));
@@ -65,7 +71,9 @@ try {
                 echo json_encode(array(
                     "message" => "User login successful. Welcome, " . $user['first_name'] . " " . $user['last_name'],
                     "status" => "success",
-                    "data" => $user,
+                    "user_id" => $user['user_id'],
+                    "first_name" => $user['first_name'],
+                    "last_name" => $user['last_name'],
                     "role_id" => 2,
                     "redirect" => "new_appointment.php"
                 ));

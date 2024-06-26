@@ -144,7 +144,17 @@ checkLoggedIn();
             alert("Username or email is already taken.");
           } else if (response.status === "success") {
             console.log(response);
-            window.location.href = "new_appointment.php";
+            var user_id = response.user_id;
+            var category = "ADMIN";
+            var action = "REGISTER";
+            var affected_data = $('#frm_register').serialize();
+            logAction(user_id, category, action, affected_data, function(logSuccess){
+              if (logSuccess) {
+                window.location.href = "new_appointment.php";
+              } else {
+                alert("error register");
+              }
+            });
           } else {
             console.log(response);
           // window.location.href="index.php";

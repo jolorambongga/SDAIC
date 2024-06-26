@@ -54,13 +54,13 @@ function logAction(user_id, category, action, affected_data, callback) {
                 success: function(response) {
                     console.log('Log inserted successfully:', response);
                     if (callback && typeof callback === 'function') {
-                        callback();
+                        callback(true);
                     }
                 },
                 error: function(error) {
                     console.error('Error inserting log:', error);
                     if (callback && typeof callback === 'function') {
-                        callback();
+                        callback(false);
                     }
                 }
             });
@@ -68,7 +68,7 @@ function logAction(user_id, category, action, affected_data, callback) {
         error: function(error) {
             console.error('Error fetching user IP:', error);
             if (callback && typeof callback === 'function') {
-                callback(); 
+                callback(false); 
             }
         }
     });

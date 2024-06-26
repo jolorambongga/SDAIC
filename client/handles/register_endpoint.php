@@ -49,13 +49,14 @@ try {
         $stmt->bindParam(':birthday', $birthday);
 
         if ($stmt->execute()) {
+            $user_id = $pdo->lastInsertId();
             $_SESSION['user_id'] = $pdo->lastInsertId();
             $_SESSION['email'] = $email;
             $_SESSION['contact'] = $contact;
             $_SESSION['first_name'] = $first_name;
             $_SESSION['middle_name'] = $middle_name;
             $_SESSION['last_name'] = $last_name;
-            echo json_encode(array("status" => "success", "message" => "Registration successful", "isTaken" => "false", "user_id" => $_SESSION['user_id']));
+            echo json_encode(array("status" => "success", "message" => "Registration successful", "isTaken" => "false", "user_id" => $user_id));
             exit;
         } else {
             echo json_encode(array("status" => "error", "message" => "Registration failed. Please try again.", "isTaken" => "false"));

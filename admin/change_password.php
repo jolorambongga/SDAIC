@@ -11,7 +11,42 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['change_password']) || $_SE
 <head>
     <meta charset="UTF-8">
     <title>Change Password</title>
-    <link rel="stylesheet" href="">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #f7f7f7;
+        }
+        .container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+        .text-center {
+            margin-bottom: 20px;
+            color: #007bff;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .btn-primary {
+            width: 100%;
+            background: #007bff;
+            border: none;
+        }
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+        #changePasswordMessage {
+            margin-bottom: 15px;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -55,11 +90,12 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['change_password']) || $_SE
 
                 $.ajax({
                     type: 'POST',
-                    url: 'handles/change_password_endpoint.php',
+                    url: 'change_password_endpoint.php',
                     data: { currentPassword: currentPassword, newPassword: newPassword },
                     dataType: 'json',
                     success: function(response) {
                         if (response.status === 'success') {
+                            console.log(response);
                             $('#changePasswordMessage').html('<div class="alert alert-success">' + response.message + '</div>');
                             setTimeout(function() {
                                 window.location.href = response.redirect;

@@ -45,7 +45,7 @@ checkLoggedIn();
 </div>
 
 <script>
-  $(document).ready(function() {
+$(document).ready(function() {
     $('#frm_login').submit(function (e) {
         e.preventDefault();
 
@@ -58,18 +58,25 @@ checkLoggedIn();
             data: { login: login, password: password },
             dataType: 'JSON',
             success: function(response) {
+                console.log(response);
                 if (response.isWrong === "true") {
                     alert("Wrong Email or Password!");
                 } else if (response.isNotFound === "true") {
                     alert("User NOT Found!");
+                } else if (response.change_password === "true") {
+                    window.location.href = response.redirect;
                 } else if (response.status === "success") {
-                    var user_id = response.data.user_id;
+                    var user_id = response.user_id;
                     var category = response.role_id === 1 ? "ADMIN" : "USER";
                     var action = "LOG IN";
                     var affected_data = "NONE";
 
-                    logAction(user_id, category, action, affected_data, function() {
-                        window.location.href = response.redirect;
+                    logAction(user_id, category, action, affected_data, function(logSuccess) {
+                        if(logSuccess) {
+                            window.location.href="new_appointment.php";
+                        } else {
+                            alert("Error logging in!");
+                        }
                     });
                 } else {
                     console.error("Login failed:", response.message);
@@ -81,6 +88,7 @@ checkLoggedIn();
         });
     });
 });
+
 </script>
 
 

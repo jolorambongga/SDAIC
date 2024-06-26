@@ -1,5 +1,4 @@
 <?php date_default_timezone_set('Asia/Manila'); ?>
-<?php include_once('../admin/change_pass_auth'); ?>
 <!DOCTYPE html>
 <html>
 <head>
