@@ -107,6 +107,15 @@ function formatDate(dateString) {
     return `${month}-${day}-${year} (${dayOfWeek})`;
 }
 
+function formatYear(dateString) {
+    var date = new Date(dateString);
+    var month = ('0' + (date.getMonth() + 1)).slice(-2); // Adding 1 because getMonth() returns 0-based index
+    var day = ('0' + date.getDate()).slice(-2);
+    var year = date.getFullYear();
+
+    return `${year}-${month}-${day}`;
+}
+
 
 
 
@@ -389,7 +398,8 @@ $(document).on('change', '#appointment_date', function() {
         var service_name = $('#procedure-select option:selected').data('service-name');
         var request_image = $('#request_image')[0].files[0];
         var appointment_date = $('#appointment_date').val();
-        var appointment_time = $('#appointment_time').val();
+        var appointment_time = formatYear($('#appointment_time').val(););
+        console.log(appointment_date);
         var formData = new FormData();
         formData.append('user_id', <?php echo($_SESSION['user_id']); ?>);
         formData.append('full_name', "<?php echo $_SESSION['first_name'] . ' ' . $_SESSION['last_name']; ?>");
