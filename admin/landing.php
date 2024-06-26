@@ -24,7 +24,7 @@ include_once('header.php');
                   <th>Main Image</th>
                 </tr>
               </thead>
-              <tbody id="currentSched">
+              <tbody id="current_landing">
                 <!-- Table rows will be dynamically populated here -->
               </tbody>
             </table>
@@ -115,6 +115,47 @@ include_once('header.php');
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script type="text/javascript">
     $(document).ready(function() {
+
+      loadLandingInfo();
+
+      function loadLandingInfo() {
+        $.ajax({
+            type: 'GET',
+            url: 'handles/landing/get_landing.php',
+            data: { landing_id: 1 },
+            dataType: 'json',
+            success: function(response) {
+                console.log(response);
+                if (response.status === 'success') {
+                  var data = response.data;
+
+                  const landing_html = `
+                  <tr>
+                  <td>${data.about_us}</th>
+                  <td>
+                    <img src="${data.about_us_image}">
+                  </td>
+                  <td>
+                    <img src="${data.main_image}">
+                  </td>
+                  </tr>
+                  `;
+
+                  $('#current_landing').append(landing_html);
+                  
+                } else {
+                  const landing_html = `
+                  <i><tr><td colspan="3"></td></tr></i>
+                  `;
+                  $('#current_landing').append(landing_html);
+                }
+            },
+            error: function(error) {
+                console.log('AJAX Error:', error);
+            }
+        });
+      }
+
       $('input[name="about_us_image_option"]').change(function() {
         if (this.value === 'url') {
           $('.about-us-image-url').show();

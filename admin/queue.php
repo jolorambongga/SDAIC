@@ -73,67 +73,70 @@ include_once('header.php');
       }
 
       function loadAppointments() {
-        console.log('load appointment function');
-        $.ajax({
-          url: 'handles/appointments/read_appointments.php',
-          type: 'GET',
-          data: {
-            today: 'true'
-          },
-          dataType: 'json',
-          success: function(response) {
-            if (response.status === 'success') {
-              console.log('QUEUE', response);
-              var appointments = response.data;
-              var currentSched = $('#currentSched');
-              currentSched.empty();
+    console.log('load appointment function');
+    $.ajax({
+      url: 'handles/appointments/read_appointments.php',
+      type: 'GET',
+      data: {
+        today: 'true'
+      },
+      dataType: 'json',
+      success: function(response) {
+        if (response.status === 'success') {
+          console.log('QUEUE', response);
+          var appointments = response.data;
+          var currentSched = $('#currentSched');
+          currentSched.empty();
 
-              var currentQueueNumber = 0;
-              var hasAppointments = false;
+          var currentQueueNumber = ''; // Initialize variable to store queue number
+          var hasAppointments = false;
 
-              appointments.forEach(function(appointment, index) {
-                // console.log("REACH FOREACH");
-                if (appointment.status === 'APPROVED') {
-                  let statusColor = getStatusColor(appointment.status);
-                  let completedColor = getCompletedColor(appointment.completed);
-                  const isChecked = appointment.completed === 'YES' ? 'checked' : '';
-
-                  currentSched.append(`
-                    <tr>
-                      <td>AUSQ-${appointment.appointment_id}${appointment.user_id}${appointment.service_id}${currentQueueNumber + 1}</td>
-                      <td>${appointment.first_name} ${appointment.last_name}</td>
-                      <td>${appointment.service_name}</td>
-                      <td>${appointment.formatted_time}</td>
-                      <td style="color: ${statusColor};">${appointment.status}</td>
-                      <td style="color: ${completedColor};">
-                        <small class="completed-text">${appointment.completed}</small>
-                        <input type="checkbox" class="complete-checkbox" data-id="${appointment.appointment_id}" ${isChecked}>
-                      </td>
-                    </tr>
-                  `);
-                  currentQueueNumber++;
-                  hasAppointments = true;
-                }
-              });
-
-              if (!hasAppointments) {
-                currentSched.append(`
-                  <tr>
-                    <td colspan="6" class="text-center"><i>No data available</i></td>
-                  </tr>
-                `);
-              }
-
-              $('#currentQueueNumber').text(currentQueueNumber);
-            } else {
-              console.error('Error loading appointments:', response.message);
+          appointments.forEach(function(appointment, index) {
+            if (index === 0) { // Check if it's the first appointment
+              currentQueueNumber = 'AUSQ-' + appointment.appointment_id + appointment.user_id + appointment.service_id;
             }
-          },
-          error: function(error) {
-            console.error('AJAX Error:', error);
+
+            if (appointment.status === 'APPROVED') {
+              let statusColor = getStatusColor(appointment.status);
+              let completedColor = getCompletedColor(appointment.completed);
+              const isChecked = appointment.completed === 'YES' ? 'checked' : '';
+
+              currentSched.append(`
+                <tr>
+                  <td>AUSQ-${appointment.appointment_id}${appointment.user_id}${appointment.service_id}</td>
+                  <td>${appointment.first_name} ${appointment.last_name}</td>
+                  <td>${appointment.service_name}</td>
+                  <td>${appointment.formatted_time}</td>
+                  <td style="color: ${statusColor};">${appointment.status}</td>
+                  <td style="color: ${completedColor};">
+                    <small class="completed-text">${appointment.completed}</small>
+                    <input type="checkbox" class="complete-checkbox" data-id="${appointment.appointment_id}" ${isChecked}>
+                  </td>
+                </tr>
+              `);
+              hasAppointments = true;
+            }
+          });
+
+          if (!hasAppointments) {
+            currentSched.append(`
+              <tr>
+                <td colspan="6" class="text-center"><i>No data available</i></td>
+              </tr>
+            `);
           }
-        });
+
+          $('#currentQueueNumber').text(currentQueueNumber); // Update the currentQueueNumber element
+        } else {
+          console.error('Error loading appointments:', response.message);
+        }
+      },
+      error: function(error) {
+        console.error('AJAX Error:', error);
       }
+    });
+  }
+
 
       // Function to update appointment status
       function updateAppointmentCompleted(appointmentId, completed) {
