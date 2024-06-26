@@ -125,7 +125,7 @@ function formatYear(dateString) {
             return dayOfWeek;
         }
 
-    function populateTimeOptions(start_time, end_time, duration) {
+function populateTimeOptions(start_time, end_time, duration) {
     $('#appointment_time').empty(); // Clear existing options
 
     // Convert start_time and end_time to Date objects for comparison
@@ -136,19 +136,17 @@ function formatYear(dateString) {
     var interval = duration * 60 * 1000; // Convert duration to milliseconds
     var currentTime = new Date(startTime); // Start from startTime
 
-    // Format options in 12-hour format with AM/PM
+    // Format options in HH:MM:SS format
     var options = [];
     while (currentTime <= endTime) {
-        var hours = currentTime.getHours();
+        var hours = ('0' + currentTime.getHours()).slice(-2);
         var minutes = ('0' + currentTime.getMinutes()).slice(-2);
-        var ampm = hours >= 12 ? 'PM' : 'AM';
-        hours = hours % 12;
-        hours = hours ? hours : 12; // Handle midnight (0 hours)
-        var optionTime = hours + ':' + minutes + ' ' + ampm;
+        var seconds = ('0' + currentTime.getSeconds()).slice(-2);
+        var optionTime = hours + ':' + minutes + ':' + seconds;
         
         options.push({
-            value: currentTime.toTimeString().slice(0, 5),
-            text: optionTime
+            value: optionTime, // Use full HH:MM:SS format for value
+            text: hours + ':' + minutes // Display in HH:MM format (if needed)
         });
 
         // Move to next interval
@@ -165,10 +163,14 @@ function formatYear(dateString) {
 }
 
 
+
+// Event handler for updating appointment time options based on date selection
 // Event handler for updating appointment time options based on date selection
 $(document).on('change', '#appointment_date', function() {
     var selectedDate = $(this).val();
     var service_id = $('#procedure-select').val();
+
+    var appointment_date = formatYear(selectedDate); // Ensure this formats to YYYY-MM-DD
 
     var day_of_week = getDayOfWeek(selectedDate);
 
@@ -198,23 +200,29 @@ $(document).on('change', '#appointment_date', function() {
                     dataType: 'json',
                     data: {
                         service_id: service_id,
-                        appointment_date: selectedDate
+                        appointment_date: appointment_date
                     },
-                    success: function(existingAppointments) {
-                        console.log("Existing Appointments:", existingAppointments);
+                    success: function(response) {
+                        console.log("Existing Appointments:", response);
 
                         // Disable options in #appointment_time based on existing appointments
                         $('#appointment_time option').each(function() {
                             var optionValue = $(this).val();
-                            if (existingAppointments.indexOf(optionValue) !== -1) {
-                                $(this).prop('disabled', true);
+                            if (response.appointments.indexOf(optionValue) !== -1) {
+                                $(this).prop('disabled', true); // Disable the option
+
+                                // Add a text on the right side indicating it's booked
+                                $(this).text($(this).text() + ' - Booked').css('color', 'red');
                             } else {
-                                $(this).prop('disabled', false);
+                                $(this).prop('disabled', false); // Enable the option
+                                // Remove the booked indication if previously set
+                                $(this).text($(this).text().replace(' - Booked', '')).css('color', ''); 
                             }
                         });
                     },
                     error: function(error) {
-                        console.log("Error fetching existing appointments:", error);
+                        console.error("Error fetching existing appointments:", error);
+                        alert("Error fetching existing appointments. Please try again.");
                     }
                 });
 
@@ -223,10 +231,13 @@ $(document).on('change', '#appointment_date', function() {
             }
         },
         error: function(error) {
-            console.log("Error fetching time details:", error);
+            console.error("Error fetching time details:", error);
+            alert("Error fetching time details. Please try again.");
         }
     });
 });
+
+
 
     var schedule = []; // Define the schedule array globally
 

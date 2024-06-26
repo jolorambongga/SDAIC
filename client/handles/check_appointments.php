@@ -20,7 +20,7 @@ try {
     $appointments = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
     // Return array of existing appointment times for the selected date
-    echo json_encode($appointments);
+    echo json_encode(array("status" => "success", "appointments" => $appointments));
 
 } catch (PDOException $e) {
     echo json_encode(array(
