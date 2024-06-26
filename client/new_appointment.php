@@ -9,161 +9,204 @@ include_once('handles/auth.php');
 checkAuth();
 ?>
 
+<!-- Datepicker CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+<!-- <script src="/bundles/bootstrap-datepicker?v=csAQJHewk-MF7ULDm6WPf6LzXwjK6YdTmHd8vsLCykI1"></script> -->
+
 <div class="my-wrapper">
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-12">
-        <h1 class="text-start">Make your new appointment</h1>
-      </div>
-    </div>
-    <!-- start multi-step form -->
-    <div class="row justify-content-center bg- p-jp-md-5">
-      <div class="col-12 col-md-8 col-lg-6">
-        <div class="wrapper mt-5">
-          <form id="appointment-form">
-            <!-- Step 1: Select Procedure -->
-            <div id="step-1" class="form-step">
-              <div class="title">Your Procedure</div>
-              <div class="box mb-3">
-                <select id="procedure-select" class="form-control">
-                  <!-- Options will be loaded here by jQuery -->
-                </select>
-              </div>
-              <button type="button" class="btn btn-warning next-btn float-end mt-3">Next</button>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="text-start">Make your new appointment</h1>
             </div>
-            
-            <!-- Step 2: Upload Image -->
-            <div id="step-2" class="form-step" style="display:none;">
-              <div class="title">Upload Photo of Your Request</div>
-              <div class="box mb-3">
-                <input accept="image/jpeg, image/png, image/gif" type="file" name="request_image" id="request_image" class="form-control">              
-              </div>
-              <button type="button" class="btn btn-warning next-btn float-end mt-3">Next</button>
-              <button type="button" class="btn btn-danger prev-btn float-end mt-3 me-2">Previous</button>
-            </div>
-            
-            <!-- Step 3: Select Date and Time -->
-            <div id="step-3" class="form-step" style="display:none;">
-              <div class="title">Select Date and Time</div>
-              <div class="box mb-3">
-                <input type="" name="appointment_date" id="appointment_date" class="form-control">
-                <select id="appointment_time" class="form-control mt-3" disabled>
-                  <!-- Time options will be loaded here by jQuery -->
-                </select>
-              </div>
-              <button type="button" class="btn btn-warning next-btn float-end mt-3">Next</button>
-              <button type="button" class="btn btn-danger prev-btn float-end mt-3 me-2">Previous</button>
-            </div>
-            
-            <!-- Step 4: Review and Submit -->
-            <div id="step-4" class="form-step" style="display:none;">
-              <div class="title">Review and Submit</div>
-              <div id="review-box" class="box mb-3">
-                <!-- Review content will be populated here -->
-              </div>
-              <button type="submit" class="btn btn-success float-end mt-3">Submit</button>
-              <button type="button" class="btn btn-danger prev-btn float-end mt-3 me-2">Previous</button>
-            </div>
-          </form>
         </div>
-      </div>
+        <!-- Start multi-step form -->
+        <div class="row justify-content-center bg- p-jp-md-5">
+            <div class="col-12 col-md-8 col-lg-6">
+                <div class="wrapper mt-5">
+                    <form id="appointment-form">
+                        <!-- Step 1: Select Procedure -->
+                        <div id="step-1" class="form-step">
+                            <div class="title">Your Procedure</div>
+                            <div class="box mb-3">
+                                <select id="procedure-select" class="form-control">
+                                    <!-- Options will be loaded here by jQuery -->
+                                    <option value="" disabled selected>Select a procedure</option>
+                                </select>
+                            </div>
+                            <button type="button" class="btn btn-warning next-btn float-end mt-3">Next</button>
+                        </div>
+
+                        <!-- Step 2: Upload Image -->
+                        <div id="step-2" class="form-step" style="display:none;">
+                            <div class="title">Upload Photo of Your Request</div>
+                            <div class="box mb-3">
+                                <input accept="image/jpeg, image/png, image/gif" type="file" name="request_image" id="request_image" class="form-control">
+                            </div>
+                            <button type="button" class="btn btn-warning next-btn float-end mt-3">Next</button>
+                            <button type="button" class="btn btn-danger prev-btn float-end mt-3 me-2">Previous</button>
+                        </div>
+
+                        <!-- Step 3: Select Date and Time -->
+                        <div id="step-3" class="form-step" style="display:none;">
+                            <div class="title">Select Date and Time</div>
+                            <div class="box mb-3">
+                                <label for="appointment_date">Select Appointment Date:</label>
+                                <input type="text" id="appointment_date" name="appointment_date" class="form-control">
+
+                                <select id="appointment_time" class="form-select mt-3" aria-label="Default select example">
+                                    <option value="" disabled selected>Select Time</option>
+                                    <!-- Times will be populated dynamically -->
+                                </select>
+                            </div>
+                            <button type="button" class="btn btn-warning next-btn float-end mt-3">Next</button>
+                            <button type="button" class="btn btn-danger prev-btn float-end mt-3 me-2">Previous</button>
+                        </div>
+
+                        <!-- Step 4: Review and Submit -->
+                        <div id="step-4" class="form-step" style="display:none;">
+                            <div class="title">Review and Submit</div>
+                            <div id="review-box" class="box mb-3">
+                                <!-- Review content will be populated here -->
+                            </div>
+                            <button type="submit" class="btn btn-success float-end mt-3">Submit</button>
+                            <button type="button" class="btn btn-danger prev-btn float-end mt-3 me-2">Previous</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- End multi-step form -->
+
+        <!-- Spinner for loading -->
+        <div id="load_spinner" class="d-flex justify-content-center" style="display: none;">
+            <!-- Your spinner HTML or loading message here -->
+        </div>
+
+        <!-- Schedule information -->
+        <input type="hidden" id="schedule" name="schedule"/>
+        <div id="schedule_body"></div>
     </div>
-    <!-- end multi-step form -->
-    <div id="load_spinner" class="d-flex justify-content-center" style="display: none;">
-      <!-- Loading spinner -->
-    </div>
-  </div>
 </div>
 
-<script type="text/javascript">
-$(document).ready(function () {
-    // Load procedures on page load
+<!-- jQuery and Bootstrap Datepicker JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+
+    var schedule = []; // Define the schedule array globally
+
+    // Function to fetch and save schedule data
+    function saveSchedule(service_id, doctor_id) {
+        $.ajax({
+            type: 'GET',
+            url: 'handles/fetch_schedule.php',
+            dataType: 'json',
+            data: { service_id: service_id, doctor_id: doctor_id },
+            success: function(response) {
+                console.log(response);
+                var body = $('#schedule_body');
+                body.empty();
+                schedule = []; // Clear schedule array
+
+                response.schedule_data.forEach(function(data) {
+                    var scheduleItem = {
+                        day_of_week: data.day_of_week,
+                        start_time: data.start_time,
+                        end_time: data.end_time
+                    };
+                    schedule.push(scheduleItem); // Push schedule item to array
+
+                    const schedule_html = `
+                    <div>
+                    <p>DAY OF WEEK: ${data.day_of_week}</p>
+                    <p>START TIME: ${data.start_time}</p>
+                    <p>END TIME: ${data.end_time}</p>
+                    </div>
+                    <hr>
+                    `;
+                    body.append(schedule_html); // Append schedule HTML to body
+                });
+
+                console.log("Schedule List:", schedule);
+                schedule = schedule.filter(Boolean);
+                updateDatePickerAvailability(); // Call function to update datepicker
+            },
+            error: function(error) {
+                console.log("Error fetching schedule:", error);
+            }
+        });
+    }
+
+    // Function to update datepicker availability based on schedule
+    function updateDatePickerAvailability() {
+        $("#appointment_date").datepicker("destroy"); // Destroy existing datepicker instance
+
+        var dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+        console.log("Schedule Data:", schedule); // Check schedule data
+
+        $("#appointment_date").datepicker("widget").on("show", function () {
+            var $calendar = $('.datepicker');
+            var $days = $calendar.find('td.day');
+
+            $days.each(function () {
+                var $day = $(this);
+                var dateString = new Date($day.data('date')).toDateString();
+                var dayOfWeek = dayNames[new Date(dateString).getDay()];
+
+                if (schedule.some(function (item) {
+                    return item.day_of_week === dayOfWeek;
+                })) {
+                    $day.removeClass('disabled');
+                } else {
+                    $day.addClass('disabled');
+                }
+            });
+        });
+    }
+
+
+
+
+    // Event handler for procedure selection change
+    $(document).on('change', '#procedure-select', function() {
+        var service_id = $(this).val();
+        var doctor_id = $(this).find(':selected').data('doctor-id');
+
+        console.log("Procedure selected:", service_id, doctor_id);
+        saveSchedule(service_id, doctor_id); // Fetch and save schedule for selected procedure
+    });
+
+    // Initial loading of procedures
     loadProcedures();
 
-    // Function to load procedures via AJAX
     function loadProcedures() {
         $.ajax({
             type: 'GET',
             url: 'handles/read_services.php',
             dataType: 'JSON',
             success: function(response) {
+                console.log(response);
                 $('#procedure-select').empty();
                 $('#procedure-select').append('<option value="" disabled selected>Select a procedure</option>');
-                $.each(response.data, function(key, value){
-                    const option = `<option value="${value.service_id}" 
-                                     data-duration="${value.duration}" 
-                                     data-schedule='${JSON.stringify({
-                                        day_of_week: value.day_of_week,
-                                        start_time: value.start_time,
-                                        end_time: value.end_time
-                                     })}'>
-                                     ${value.service_name}
-                                   </option>`;
+
+                $.each(response.data, function(key, value) {
+                    const option = `<option value="${value.service_id}" data-service-name="${value.service_name}" data-service-duration="${value.duration}" data-service-max="${value.max}" data-doctor-id="${value.doctor_id}">${value.service_name}</option>`;
                     $('#procedure-select').append(option);
                 });
             },
             error: function(error) {
-                console.log("ERROR LOADING PROCEDURES:", error);
+                console.log("Error loading procedures:", error);
             }
         });
     }
 
-    // Event handler for procedure selection
-    $('#procedure-select').change(function() {
-        const selectedOption = $('#procedure-select option:selected');
-        const duration = selectedOption.data('duration');
-        const schedule = JSON.parse(selectedOption.data('schedule'));
-
-        // Configure datepicker
-        $('#appointment_date').attr('min', new Date().toISOString().split('T')[0]);
-        $('#appointment_date').datepicker({
-            daysOfWeekDisabled: schedule.day_of_week.map(day => (day === 'Sunday' ? 0 : day)),
-            format: 'yyyy-mm-dd',
-            startDate: '+1d',
-        });
-
-        // Event handler for date selection
-        $('#appointment_date').change(function() {
-            const selectedDate = $(this).val();
-            loadAvailableTimes(selectedOption.val(), selectedDate, duration, schedule);
-        });
-    });
-
-    // Function to load available times based on service and date
-    function loadAvailableTimes(service_id, date, duration, schedule) {
-        $.ajax({
-            type: 'GET',
-            url: `handles/check_appointment_availability.php?service_id=${service_id}&date=${date}`,
-            dataType: 'JSON',
-            success: function(response) {
-                $('#appointment_time').empty().prop('disabled', false);
-
-                const takenTimes = response.data;
-                const { start_time, end_time } = schedule;
-                const startTime = parseInt(start_time.substring(0, 2), 10); // Extract hour from HH:MM format
-                const endTime = parseInt(end_time.substring(0, 2), 10);
-
-                // Generate available time slots
-                for (let hour = startTime; hour < endTime; hour++) {
-                    for (let minute = 0; minute < 60; minute += duration) {
-                        let time = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
-                        if (!takenTimes.includes(time)) {
-                            $('#appointment_time').append(`<option value="${time}">${time}</option>`);
-                        }
-                    }
-                }
-            },
-            error: function(error) {
-                console.log("ERROR CHECKING AVAILABILITY:", error);
-            }
-        });
-    }
-
-    // Event handler for next button
-    $('.next-btn').click(function(){
+    // Event handler for next button clicks (form navigation)
+    $('.next-btn').click(function() {
         var $currentStep = $(this).closest('.form-step');
-
-        // Basic validation per step
         if ($currentStep.attr('id') === 'step-1') {
             if ($('#procedure-select').val() === null) {
                 alert('Please select a procedure before proceeding.');
@@ -175,29 +218,35 @@ $(document).ready(function () {
                 return;
             }
         } else if ($currentStep.attr('id') === 'step-3') {
-            if ($('#appointment_date').val() === '' || $('#appointment_time').val() === '') {
+            if ($('#appointment_date').val() === '' || $('#appointment_time').val() === null) {
                 alert('Please select a date and time before proceeding.');
                 return;
             }
-        }
+            var appointmentTime = new Date($('#appointment_date').val() + 'T' + $('#appointment_time').val());
+            var now = new Date();
+            now.setHours(now.getHours() + 1);
 
-        // Show next step
+            if (appointmentTime < now) {
+                alert('Appointment time must be at least 1 hour from now.');
+                return;
+            }
+        }
         $currentStep.hide().next('.form-step').show();
 
-        // Populate review box on step 3
+        // Update review box content on step 3
         if ($currentStep.attr('id') === 'step-3') {
             populateReviewBox();
         }
     });
 
-    // Event handler for previous button
-    $('.prev-btn').click(function(){
+    // Event handler for previous button clicks (form navigation)
+    $('.prev-btn').click(function() {
         $(this).closest('.form-step').hide().prev('.form-step').show();
     });
 
-    // Function to populate review box
+    // Function to populate review box content
     function populateReviewBox() {
-        var service_name = $('#procedure-select option:selected').text();
+        var service_name = $('#procedure-select option:selected').data('service-name');
         var request_image = $('#request_image')[0].files[0];
         var appointment_date = $('#appointment_date').val();
         var appointment_time = $('#appointment_time').val();
@@ -207,11 +256,67 @@ $(document).ready(function () {
             <p><strong>Image:</strong> ${request_image ? request_image.name : 'No image uploaded'}</p>
             <p><strong>Appointment Date:</strong> ${appointment_date}</p>
             <p><strong>Appointment Time:</strong> ${appointment_time}</p>
-        `);
+            `);
     }
+
+    // Event handler for form submission
+    $('#appointment-form').submit(function(e) {
+        e.preventDefault();
+        var service_id = $('#procedure-select').val();
+        var service_name = $('#procedure-select option:selected').data('service-name');
+        var request_image = $('#request_image')[0].files[0];
+        var appointment_date = $('#appointment_date').val();
+        var appointment_time = $('#appointment_time').val();
+        var formData = new FormData();
+        formData.append('user_id', <?php echo($_SESSION['user_id']); ?>);
+        formData.append('full_name', "<?php echo $_SESSION['first_name'] . ' ' . $_SESSION['last_name']; ?>");
+        formData.append('email', "<?php echo($_SESSION['email']); ?>");
+        formData.append('service_id', service_id);
+        formData.append('service_name', service_name);
+        formData.append('appointment_date', appointment_date);
+        formData.append('appointment_time', appointment_time);
+        formData.append('request_image', request_image);
+        $.ajax({
+            type: 'POST',
+            url: 'handles/submit_appointment.php',
+            data: formData,
+            dataType: 'json',
+            contentType: false,
+            processData: false,
+            beforeSend: function() {
+                $('#load_spinner').show();
+            },
+            success: function(response) {
+                $('#load_spinner').hide();
+                alert('Appointment submitted successfully!');
+                window.location.href = "your_appointments.php";
+            },
+            error: function(error) {
+                $('#load_spinner').hide();
+                console.log("Error submitting appointment:", error);
+            }
+        });
+    });
+
+    // Initialize datepicker after loading procedures
+    $(document).ajaxComplete(function() {
+        $("#appointment_date").datepicker({
+            dateFormat: 'yy-mm-dd',
+            showButtonPanel: true,
+            minDate: 0,
+            changeMonth: true,
+            changeYear: false
+        });
+    });
+
+    // Event handler for updating appointment time options based on date selection
+    $(document).on('change', '#appointment_date', function() {
+        var selectedDate = $(this).val();
+        // Implement logic to fetch and populate appointment times dynamically
+        // Example: AJAX call to fetch available times and populate #appointment_time select options
+    });
+
 });
-
-
 </script>
 
 <?php
