@@ -96,6 +96,66 @@ checkAuth();
 <script>
     $(document).ready(function () {
 
+        function getDayOfWeek(selectedDate) {
+            var dateObj = new Date(selectedDate);
+            var dayOfWeek = dateObj.toLocaleDateString('en-US', { weekday: 'long' });
+            return dayOfWeek;
+        }
+
+    function populateTimeOptions(start_time, end_time, duration) {
+        $('#appointment_time').empty(); // Clear existing options
+
+        // Convert start_time and end_time to Date objects for comparison
+        var startTime = new Date('1970-01-01T' + start_time);
+        var endTime = new Date('1970-01-01T' + end_time);
+
+        // Calculate intervals based on duration
+        var interval = duration * 60 * 1000; // Convert duration to milliseconds
+        var currentTime = new Date(startTime); // Start from startTime
+
+        // Populate options until currentTime exceeds endTime
+        while (currentTime <= endTime) {
+            var optionTime = currentTime.getHours() + ':' + ('0' + currentTime.getMinutes()).slice(-2);
+            $('#appointment_time').append($('<option>', {
+                value: optionTime,
+                text: optionTime
+            }));
+
+            // Move to next interval
+            currentTime.setTime(currentTime.getTime() + interval);
+        }
+    }
+
+// Event handler for updating appointment time options based on date selection
+$(document).on('change', '#appointment_date', function() {
+    var selectedDate = $(this).val();
+    var service_id = $('#procedure-select').val();
+
+    var day_of_week = getDayOfWeek(selectedDate);
+
+    // Fetch relevant time details (start_time, end_time, duration) for selected service_id and date
+    // Assuming these details are available in your response from loadProcedures()
+
+    $.ajax({
+        type: 'GET',
+        url: 'handles/fetch_time.php',
+        dataType: 'json',
+        data: { service_id: service_id, day_of_week: day_of_week},
+        success: function(response) {
+            console.log(response);
+            var start_time = response.start_time;
+            var end_time = response.end_time;
+            var duration = response.duration;
+
+            // Populate time options based on fetched details
+            populateTimeOptions(start_time, end_time, duration);
+        },
+        error: function(error) {
+            console.log("Error fetching time details:", error);
+        }
+    });
+});
+
     var schedule = []; // Define the schedule array globally
 
     // Function to fetch and save schedule data

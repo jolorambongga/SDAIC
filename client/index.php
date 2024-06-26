@@ -153,7 +153,7 @@ include_once('header.php');
       });
     }
 
-    function loadServices() {
+  function loadServices() {
   $.ajax({
     type: 'GET',
     dataType: 'JSON',
