@@ -73,7 +73,7 @@ $(document).ready(function() {
 
                     logAction(user_id, category, action, affected_data, function(logSuccess) {
                         if(logSuccess) {
-                            window.location.href="new_appointment.php";
+                            window.location.href = response.role_id === 1 ? response.redirect : 'new_appointment.php';
                         } else {
                             alert("Error logging in!");
                         }
