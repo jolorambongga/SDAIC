@@ -125,6 +125,9 @@ include_once "header.php";
       <?php
       include_once('modals/receipt_modal.php');
       ?>
+      <?php
+      include_once('modals/result_modal.php');
+      ?>
       <input type="hidden" id="activeServiceId" value="All">
     </div>
   </div>
@@ -212,17 +215,25 @@ include_once "header.php";
               <small class="completed-text">${data.completed}</small>
               <input type="checkbox" class="cbxCompleted" data-completed-yes="YES" data-completed-no="NO" ${isChecked} />
               </td>
-              <td data-appointment-id='${data.appointment_id}' data-full-name="${data.first_name} ${data.last_name}" data-appointment-name="${data.service_name}" data-appointment-date="${data.formatted_date}" data-appointment-time="${data.formatted_time}" data-price="${data.cost}">
+              <td data-appointment-id='${data.appointment_id}' data-email="${data.email}" data-full-name="${data.first_name} ${data.last_name}" data-appointment-name="${data.service_name}" data-appointment-date="${data.formatted_date}" data-appointment-time="${data.formatted_time}" data-price="${data.cost}">
               <div class="d-grid gap-2 d-md-flex justify-content-md-end text-center">
+
               <button id='callReject' data-bs-toggle="modal" data-bs-target="#mod_Reject" type='button' class='btn btn-mymedium btn-sm'>
               <i class="fas fa-thumbs-down"></i>
               </button>
+
               <button id='callApprove' data-bs-toggle="modal" data-bs-target="#mod_Approve" type='button' class='btn btn-myshadow btn-sm'>
               <i class="fas fa-thumbs-up"></i>
               </button>
+
               <button id='callReceipt' data-bs-toggle="modal" data-bs-target="#mod_Input" type='button' class='btn btn-mydark btn-sm'>
               <i class="fas fa-receipt"></i>
               </button>
+
+              <button id='callResult' data-bs-toggle="modal" data-bs-target="#mod_Result" type='button' class='btn btn-mylight btn-sm'>
+              <i class="fas fa-folder"></i>
+              </button>
+
               </div>
               </td>
               </tr>

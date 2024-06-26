@@ -21,6 +21,7 @@ try {
                 u.last_name,
                 a.user_id,
                 a.service_id,
+                u.email,
                 s.service_name, s.cost,
                 DATE_FORMAT(CONVERT_TZ(a.appointment_date, '+00:00', '+08:00'), '%M %d, %Y (%W)') as formatted_date,
                 TIME_FORMAT(a.appointment_time, '%h:%i %p') as formatted_time,
