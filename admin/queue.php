@@ -100,7 +100,7 @@ include_once('header.php');
 
                   currentSched.append(`
                     <tr>
-                      <td>${currentQueueNumber + 1}</td>
+                      <td>AUSQ-${appointment.appointment_id}${appointment.user_id}${appointment.service_id}${currentQueueNumber + 1}</td>
                       <td>${appointment.first_name} ${appointment.last_name}</td>
                       <td>${appointment.service_name}</td>
                       <td>${appointment.formatted_time}</td>
