@@ -19,7 +19,7 @@ try {
                 a.appointment_id,
                 u.first_name,
                 u.last_name,
-                s.service_name,
+                s.service_name, s.cost,
                 DATE_FORMAT(CONVERT_TZ(a.appointment_date, '+00:00', '+08:00'), '%M %d, %Y (%W)') as formatted_date,
                 TIME_FORMAT(a.appointment_time, '%h:%i %p') as formatted_time,
                 a.notes,
@@ -66,7 +66,7 @@ try {
     }
 
     header('Content-Type: application/json');
-    echo json_encode(array("status" => "success", "process" => "read appointments", "data" => $appointments, "today" => $today, "service" => $service_id, "current date" => $current_date, "SQL KO" => $sql));
+    echo json_encode(array("status" => "success", "process" => "read_appointments", "data" => $appointments, "today" => $today, "service" => $service_id, "current date" => $current_date, "SQL KO" => $sql));
 
 } catch (PDOException $e) {
     echo json_encode(array("status" => "error", "message" => $e->getMessage(), "process" => "read appointments"));

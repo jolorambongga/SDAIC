@@ -54,7 +54,7 @@ include_once('header.php');
           dataType: 'json',
           success: function(response) {
             if (response.status === 'success') {
-              console.log('success', response);
+              console.log('QUEUE', response);
               var appointments = response.data;
               var currentSched = $('#currentSched');
               currentSched.empty();
@@ -63,7 +63,8 @@ include_once('header.php');
               var hasAppointments = false;
 
               appointments.forEach(function(appointment, index) {
-                if (appointment.status === 'APPROVE') {
+                console.log("REACH FOREACH");
+                if (appointment.status === 'APPROVED') {
                   currentSched.append(`
                     <tr>
                       <td>${currentQueueNumber + 1}</td>

@@ -219,6 +219,11 @@
           $('#bodySched').empty();
           scheduleList = [];
           $('#doctor_sched').val('');
+          logAction(1, 'ADMIN', 'CREATE DOCTOR', JSON.stringify(doctor_data), function(logSuccess) {
+            if (logSuccess) {
+              alert('doctor created successfully!');
+            }
+          })
         },
         error: function (error) {
           console.log('ADD DOCTOR ERROR:', error);

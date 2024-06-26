@@ -2,16 +2,16 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="mod_InputLabel">Enter Price and Cash</h5>
+        <h5 class="modal-title" id="mod_InputLabel">Generate Receipt for <span id="patient_name"></span> : <span id="service_name"></span></h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <div class="mb-3">
+        <!-- <div class="mb-3">
           <label for="inputPrice" class="form-label">Price:</label>
           <input type="number" class="form-control" id="inputPrice" required>
-        </div>
+        </div> -->
         <div class="mb-3">
-          <label for="inputCash" class="form-label">Cash:</label>
+          <label for="inputCash" class="form-label">Cash Amount:</label>
           <input type="number" class="form-control" id="inputCash" required>
         </div>
       </div>
@@ -37,10 +37,10 @@
           <p><strong>Appointment Date:</strong> <span id="receiptAppointmentDate"></span></p>
           <p><strong>Appointment Time:</strong> <span id="receiptAppointmentTime"></span></p>
           <hr>
-          <p><strong>Price:</strong> <span id="receiptPrice"></span></p>
-          <p><strong>Cash:</strong> <span id="receiptCash"></span></p>
-          <p><strong>Change:</strong> <span id="receiptChange"></span></p>
-          <p><strong>Date Generated:</strong> <span id="receiptDateGenerated"></span></p>
+          <p class="text-end"><strong>Price:</strong> <span id="receiptPrice"></span></p>
+          <p class="text-end"><strong>Cash:</strong> <span id="receiptCash"></span></p>
+          <p class="text-end"><strong>Change:</strong> <span id="receiptChange"></span></p>
+          <small><p class="text-center"><strong>Date Generated:</strong> <span id="receiptDateGenerated"></span></p></small>
         </div>
       </div>
       <div class="modal-footer">
@@ -55,6 +55,7 @@
 <input type="hidden" id="r_procedure">
 <input type="hidden" id="r_appointment_date">
 <input type="hidden" id="r_appointment_time">
+<input type="hidden" id="r_price">
 
 <script>
   $(document).ready(function() {
@@ -63,7 +64,17 @@
       $('#r_patient_name').val($(this).closest('td').data('full-name'));
       $('#r_procedure').val($(this).closest('td').data('appointment-name'));
       $('#r_appointment_date').val($(this).closest('td').data('appointment-date'));
-      $('#r_appointment_time').val($(this).closest('td').data('appointment-time'));      
+      $('#r_appointment_time').val($(this).closest('td').data('appointment-time'));
+      $('#r_price').val($(this).closest('td').data('price'));
+      console.log($('#price'));
+      var patient_name = $('#r_patient_name').val();
+      var service_name = $('#r_procedure').val();
+      $('#patient_name').text(patient_name);
+      $('#service_name').text(service_name);
+    });
+
+    $(document).on('hidden.bs.modal', '#mod_Input', function () {
+      $('#inputCash').val('');
     });
 
     // Function to format a number with leading zeros (e.g., 1 -> 01, 12 -> 12)
@@ -99,7 +110,7 @@
 
     // Event listener for clicking "Calculate Change" button
     $('#calculateChange').click(function() {
-      var price = parseFloat($('#inputPrice').val());
+      var price = parseFloat($('#r_price').val());
       var cash = parseFloat($('#inputCash').val());
 
       if (isNaN(price) || isNaN(cash) || price < 0 || cash < 0) {
@@ -121,8 +132,8 @@
       populateReceiptModal(patientName, procedureType, appointmentDate, appointmentTime);
 
       $('#mod_Input').modal('hide');
-      $('#receiptPrice').text(price);
-      $('#receiptCash').text(cash);
+      $('#receiptPrice').text(price.toFixed(2));
+      $('#receiptCash').text(cash.toFixed(2));
       $('#receiptChange').text(change.toFixed(2));
       $('#mod_Receipt').modal('show');
     });
