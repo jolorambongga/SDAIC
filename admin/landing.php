@@ -111,6 +111,30 @@ include_once('header.php');
   </form>
   <!-- end modal -->
 
+  <!-- Bootstrap Modal -->
+<div class="modal fade" id="mod_ReqImg" tabindex="-1" aria-labelledby="mod_ReqImgLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h5 class="modal-title" id="mod_ReqImgLabel">Image Preview</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body text-center">
+                <img src="" class="img-fluid" alt="Image">
+            </div>
+
+            <!-- Modal Footer (optional) -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script type="text/javascript">
@@ -119,42 +143,54 @@ include_once('header.php');
       loadLandingInfo();
 
       function loadLandingInfo() {
-        $.ajax({
-            type: 'GET',
-            url: 'handles/landing/get_landing.php',
-            data: { landing_id: 1 },
-            dataType: 'json',
-            success: function(response) {
-                console.log(response);
-                if (response.status === 'success') {
-                  var data = response.data;
+    $.ajax({
+        type: 'GET',
+        url: 'handles/landing/get_landing.php',
+        data: { landing_id: 1 }, // Adjust landing_id as needed
+        dataType: 'json',
+        success: function(response) {
+            console.log(response);
+            if (response.status === 'success') {
+                var data = response.data;
 
-                  const landing_html = `
-                  <tr>
-                  <td>${data.about_us}</th>
-                  <td>
-                    <img src="${data.about_us_image}">
-                  </td>
-                  <td>
-                    <img src="${data.main_image}">
-                  </td>
-                  </tr>
-                  `;
+                // Prepare HTML with buttons to view images in modal
+                const landing_html = `
+                    <tr>
+                        <td>${data.about_us}</td>
+                        <td>
+                            <button type="button" class="btn btn-warning btn-sm view-image-btn" data-bs-toggle="modal" data-bs-target="#mod_ReqImg" data-image-url="${data.about_us_image}">View Image</button>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-warning btn-sm view-image-btn" data-bs-toggle="modal" data-bs-target="#mod_ReqImg" data-image-url="${data.main_image}">View Image</button>
+                        </td>
+                    </tr>
+                `;
 
-                  $('#current_landing').append(landing_html);
-                  
-                } else {
-                  const landing_html = `
-                  <i><tr><td colspan="3"></td></tr></i>
-                  `;
-                  $('#current_landing').append(landing_html);
-                }
-            },
-            error: function(error) {
-                console.log('AJAX Error:', error);
+                $('#current_landing').append(landing_html);
+
+            } else {
+                const landing_html = `
+                    <i><tr><td colspan="3"></td></tr></i>
+                `;
+                $('#current_landing').append(landing_html);
             }
-        });
-      }
+        },
+        error: function(error) {
+            console.log('AJAX Error:', error);
+        }
+    });
+
+    // Modal image display handling
+    $('#mod_ReqImg').on('show.bs.modal', function(event) {
+        var button = $(event.relatedTarget); // Button that triggered the modal
+        var imageUrl = button.data('image-url'); // Extract image URL from data- attribute
+
+        // Update modal content dynamically with the image URL
+        var modal = $(this);
+        modal.find('.modal-body img').attr('src', imageUrl);
+    });
+}
+
 
       $('input[name="about_us_image_option"]').change(function() {
         if (this.value === 'url') {
@@ -184,7 +220,7 @@ include_once('header.php');
         }
       });
 
-      $('#frm_addLanding').submit(function(event) {
+      $(document).on('submit', '#frm_addLanding', function(event) {
         event.preventDefault(); // Prevent form submission
 
         var about_us = $('#about_us').val();
@@ -215,6 +251,7 @@ include_once('header.php');
             console.log("SAVE LANDING RESPONSE", response);
             // Handle success response
             $('#mod_addLanding .btn-close').click();
+            loadLandingInfo();
           },
           error: function(error) {
             console.log("ERROR LANDING RESPONSE", error);

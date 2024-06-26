@@ -8,13 +8,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Extract POST data
         $about_us = isset($_POST['about_us']) ? $_POST['about_us'] : '';
-        $about_us_image = isset($_FILES['about_us_image']['tmp_name']) ? $_FILES['about_us_image']['tmp_name'] : '';
-        $main_image = isset($_FILES['main_image']['tmp_name']) ? $_FILES['main_image']['tmp_name'] : '';
+        $about_us_image = isset($_POST['about_us_image']) ? $_POST['about_us_image'] : '';
+        $main_image = isset($_POST['main_image']) ? $_POST['main_image'] : '';
         $landing_id = 1; // Adjust as necessary
-
-        // Handle file uploads
-        $about_us_image_base64 = $about_us_image ? base64_encode(file_get_contents($about_us_image)) : '';
-        $main_image_base64 = $main_image ? base64_encode(file_get_contents($main_image)) : '';
 
         // Prepare and execute SQL statement for UPDATE
         $sql = "UPDATE tbl_Landing 
@@ -23,8 +19,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $stmt = $pdo->prepare($sql);
         $stmt->bindParam(':about_us', $about_us, PDO::PARAM_STR);
-        $stmt->bindParam(':about_us_image', $about_us_image_base64, PDO::PARAM_STR);
-        $stmt->bindParam(':main_image', $main_image_base64, PDO::PARAM_STR);
+        $stmt->bindParam(':about_us_image', $about_us_image, PDO::PARAM_STR);
+        $stmt->bindParam(':main_image', $main_image, PDO::PARAM_STR);
         $stmt->bindParam(':landing_id', $landing_id, PDO::PARAM_INT);
         $stmt->execute();
 
