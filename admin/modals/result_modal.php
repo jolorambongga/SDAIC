@@ -10,7 +10,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <label for="note" class="form-label">Additional Note:</label>
+        <label for="note" class="form-label">Additional Note: <i>(optional)</i></label>
         <input type="text" class="form-control" id="note">
       </div>
       <div class="modal-footer">

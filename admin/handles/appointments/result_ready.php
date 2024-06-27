@@ -11,7 +11,11 @@ try {
 	$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 	$appointment_id = $_POST['appointment_id'];
-	$additional_note = isset($_POST['additional_note']) ? "<b>Note: </b> <i>" . $_POST['additional_note'] . "</i>" : '';
+	$additional_note = '';
+
+	if (isset($_POST['additional_note']) && !empty(trim($_POST['additional_note']))) {
+        $additional_note = "<b>Note: </b> <i>" . htmlspecialchars($_POST['additional_note']) . "</i>";
+    }	
 
 
 	$sql = "SELECT *, CONCAT(u.first_name, ' ', u.last_name) as full_name, s.service_name

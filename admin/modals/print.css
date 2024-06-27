@@ -71,3 +71,37 @@ body * {
         max-width: 100%; /* Ensure images fit in print */
     }
 }
+
+
+<style>
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .centered-text {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+    }
+    .left-align {
+      text-align: left;
+      width: 50%; /* Adjust this value as needed */
+    }
+    .right-align {
+      text-align: right;
+      width: 50%; /* Adjust this value as needed */
+    }
+    .price-container, .cash-container, .change-container {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+    }
+    .price, .cash, .change {
+      margin-left: 50px;
+    }
+    .date-generated {
+      text-align: center;
+      margin-top: 20px; /* Adjust this value for spacing */
+    }
+  </style>
