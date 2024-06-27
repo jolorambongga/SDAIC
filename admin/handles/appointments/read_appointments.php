@@ -69,7 +69,7 @@ try {
     }
 
     header('Content-Type: application/json');
-    echo json_encode(array("status" => "success", "process" => "read_appointments", "data" => $appointments, "today" => $today, "service" => $service_id, "current date" => $current_date, "SQL KO" => $sql));
+    echo json_encode(array("status" => "success", "process" => "read_appointmentsss", "data" => $appointments, "today" => $today, "service" => $service_id, "current date" => $current_date, "SQL KO" => $sql));
 
 } catch (PDOException $e) {
     echo json_encode(array("status" => "error", "message" => $e->getMessage(), "process" => "read appointments"));

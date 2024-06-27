@@ -215,7 +215,7 @@ include_once "header.php";
               <small class="completed-text">${data.completed}</small>
               <input type="checkbox" class="cbxCompleted" data-completed-yes="YES" data-completed-no="NO" ${isChecked} />
               </td>
-              <td data-appointment-id='${data.appointment_id}' data-email="${data.email}" data-full-name="${data.first_name} ${data.last_name}" data-appointment-name="${data.service_name}" data-appointment-date="${data.formatted_date}" data-appointment-time="${data.formatted_time}" data-price="${data.cost}">
+              <td data-appointment-id='${data.appointment_id}' data-email="${data.email}" data-full-name="${data.first_name} ${data.last_name}" data-appointment-name="${data.service_name}" data-appointment-date="${data.formatted_date}" data-appointment-time="${data.formatted_time}" data-price="${data.cost}" data-service-id="${data.service_id}" data-user-id="${data.user_id}" data-first-name="${data.first_name}" data-last-name="${data.last_name}">
               <div class="d-grid gap-2 d-md-flex justify-content-md-end text-center">
 
               <button id='callReject' data-bs-toggle="modal" data-bs-target="#mod_Reject" type='button' class='btn btn-mymedium btn-sm'>

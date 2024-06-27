@@ -57,19 +57,84 @@
 <input type="hidden" id="r_appointment_time">
 <input type="hidden" id="r_price">
 
+<input type="hidden" id="r_appointment_id">
+<input type="hidden" id="r_service_id">
+<input type="hidden" id="r_user_id">
+
+<input type="hidden" id="r_first_name">
+<input type="hidden" id="r_last_name">
+
+<input type="hidden" id="r_cash">
+<input type="hidden" id="r_change">
+
+
+<input type="hidden" id="r_transaction_number">
+
 <script>
   $(document).ready(function() {
 
+    // FUNCTIONS FOR TRANSAC NUM>
+    function generateRandomString(length) {
+      const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      let result = '';
+      const charactersLength = characters.length;
+      for (let i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+      }
+      return result;
+    }
+
+    function getFirstTwoLetters(str) {
+      if (str && str.length >= 2) {
+        return str.substring(0, 2);
+      }
+      return '';
+    }
+
+
     $(document).on('click', '#callReceipt', function() {
+
+      const now = new Date();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      const year = now.getFullYear();
+      const randomString = generateRandomString(2);
+      const firstTwoLetters = getFirstTwoLetters(randomString);
+
       $('#r_patient_name').val($(this).closest('td').data('full-name'));
       $('#r_procedure').val($(this).closest('td').data('appointment-name'));
       $('#r_appointment_date').val($(this).closest('td').data('appointment-date'));
       $('#r_appointment_time').val($(this).closest('td').data('appointment-time'));
       $('#r_price').val($(this).closest('td').data('price'));
-      console.log($('#price'));
+      
+      $('#r_appointment_id').val($(this).closest('td').data('appointment-id'));
+      $('#r_service_id').val($(this).closest('td').data('service-id'));
+      $('#r_user_id').val($(this).closest('td').data('user-id'));
+
+      $('#r_first_name').val($(this).closest('td').data('first-name'));
+      $('#r_last_name').val($(this).closest('td').data('last-name'));
+
       var patient_name = $('#r_patient_name').val();
       var service_name = $('#r_procedure').val();
       var service_price = $('#r_price').val();
+      var first_name = $('#r_first_name').val();
+      var last_name = $('#r_last_name').val();
+
+      var procedure = getFirstTwoLetters(service_name);
+      var fname = getFirstTwoLetters(first_name).toUpperCase();
+      var lname = getFirstTwoLetters(last_name).toUpperCase();
+
+      var random_string = generateRandomString(5);
+
+      var appointment_id = $('#r_appointment_id').val();
+      var service_id = $('#r_service_id').val();
+      var user_id = $('#r_user_id').val();
+
+      const transaction_number = `SDAIC-${appointment_id}${random_string}-00${procedure}00${service_id}${fname}${lname}-00${user_id}`;
+
+      $('#r_transaction_number').val(transaction_number);
+
+
       $('#patient_name').text(patient_name);
       $('#service_name').text(service_name);
       $('#service_price').text(service_price);
@@ -131,6 +196,9 @@
       var appointmentDate = $('#r_appointment_date').val();
       var appointmentTime = $('#r_appointment_time').val();
 
+      $('#r_cash').val(cash);
+      $('#r_change').val(change);
+
       populateReceiptModal(patientName, procedureType, appointmentDate, appointmentTime);
 
       $('#mod_Input').modal('hide');
@@ -140,157 +208,174 @@
       $('#mod_Receipt').modal('show');
     });
 
+
+
     $('#printReceipt').click(function() {
-  var printWindow = window.open('', '_blank');
+      var printWindow = window.open('', '_blank');
 
-  // Extract specific parts of the modal content
-  var patientName = $('#receiptPatientName').text();
-  var procedureType = $('#receiptProcedureType').text();
-  var appointmentDate = $('#receiptAppointmentDate').text();
-  var appointmentTime = $('#receiptAppointmentTime').text();
-  var price = $('#receiptPrice').text();
-  var cash = $('#receiptCash').text();
-  var change = $('#receiptChange').text();
-  var dateGenerated = $('#receiptDateGenerated').text();
+      var patient_name = $('#r_patient_name').val();
+      var procedure = $('#r_procedure').val();
+      var date = $('#r_appointment_date').val();
+      var time = $('#r_appointment_time').val();
+      // var price = $('#r_price').val();
+      var price = $('#r_price').val();
+      var cash = parseFloat($('#r_cash').val()).toFixed(2);
 
-  // Construct the HTML for the print window
-  var html = `
-  <!DOCTYPE html>
-  <html lang="en">
-  <head>
+      var change = parseFloat($('#r_change').val()).toFixed(2);
+
+      var transaction_number = $('#r_transaction_number').val();
+
+    function getCurrentDateTime() {
+        const now = new Date();
+
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0'); // January is 0, so we add 1
+        const day = String(now.getDate()).padStart(2, '0');
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+
+        return `${year}-${month}-${day} | ${hours}:${minutes}:${seconds}`;
+    }
+
+    var date_time = getCurrentDateTime();
+
+      var html = `
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Print Receipt</title>
-  <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.0/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="print.css" media="print">
   <style>
-    .container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .centered-text {
+    body {
       display: flex;
       justify-content: center;
-      width: 100%;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
     }
-    .left-align {
+    .container {
+      border: 1px solid #000;
+      padding: 20px;
+      width: 300px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
       text-align: left;
-      width: 50%;
+      word-wrap: break-word; /* Added for word wrapping */
     }
-    .right-align {
-      text-align: right;
-      width: 85%;
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .clinic-title {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .clinic-address {
+      font-size: 0.9em;
+      margin-bottom: 10px;
+    }
+    .logo {
+      width: 100px;
+      height: 100px;
+      background-image: url('https://i.ibb.co/Rc17B0p/SDAIC.png');
+      background-size: contain; /* Ensures the background image fits within the dimensions without stretching */
+      background-position: center; /* Centers the background image within the .logo element */
+      margin: 0 auto 10px auto;
+    }
+    .row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .separator {
+      border-top: 1px solid #000;
+      margin: 10px 0;
     }
     .price-container, .cash-container, .change-container {
-      display: flex;
-      justify-content: center;
-      width: 100%;
-    }
-    .price, .cash, .change {
-      margin-left: 50px;
+      margin-top: 10px;
     }
     .date-generated {
       text-align: center;
       margin-top: 20px;
     }
+    .transaction-number {
+      text-align: center;
+      margin-top: 10px;
+      font-weight: bold;
+      word-wrap: break-word; /* Added for word wrapping */
+    }
   </style>
-  </head>
-  <body>
-    <div class="container">
-      <p class="patient-name"><strong>Patient Name:</strong> ${patientName}</p>
-      <p><strong>Procedure Type:</strong> ${procedureType}</p>
-      <p><strong>Appointment Date:</strong> ${appointmentDate}</p>
-      <p><strong>Appointment Time:</strong> ${appointmentTime}</p>
-      <hr>
-      <p class="text-end right-align price"><strong>Price:</strong> ${price}</p>
-      <p class="text-end right-align cash"><strong>Cash:</strong> ${cash}</p>
-      <p class="text-end right-align change"><strong>Change:</strong> ${change}</p>
-      <small><p class="text-center date-generated"><strong>Date Generated:</strong> ${dateGenerated}</p></small>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="logo"></div>
+      <div class="clinic-title">STA. MARIA DIAGNOSTIC CLINIC</div>
+      <div class="clinic-address">#73 MGP BLDG. J.C. DE JESUS ST. POBLACION, STA. MARIA, BULACAN</div>
+      <strong>Official Receipt</strong>
     </div>
-    <script>
-      window.onload = function() {
-        window.print();
-        // window.close();
-      };
-    <\/script>
-  </body>
-  </html>
-  `;
+    <div class="row">
+      <div>Patient Name:</div>
+      <div>${patient_name}</div>
+    </div>
+    <div class="row">
+      <div>Procedure:</div>
+      <div>${procedure}</div>
+    </div>
+    <div class="row">
+      <div>Date:</div>
+      <div>${date}</div>
+    </div>
+    <div class="row">
+      <div>Time:</div>
+      <div>${time}</div>
+    </div>
+    <div class="separator"></div>
+    <div class="price-container row">
+      <div>Price:</div>
+      <div>₱${price}</div>
+    </div>
+    <div class="cash-container row">
+      <div>Cash:</div>
+      <div>₱${cash}</div>
+    </div>
+    <div class="change-container row">
+      <div>Change:</div>
+      <div>₱${change}</div>
+    </div>
+    <div class="separator"></div>
+    <div class="transaction-number" id="transaction-number">
+      Transaction Number:
+    </div>
+    <center><small>${transaction_number}</small></center>
+    <hr>
+    <center>
+      <small><u>Tell us about your experience.</u></small><br>
+      <small style="font-size: 10px">Send us feedback at <i>https://tinyurl.com/2e8jvbmm</i></small><br>
+      <small style="font-size: 10px">Visit us also at <i>https://tinyurl.com/yfpapwfu</i></small>
+    </center>      
+    <div class="date-generated">
+      <hr>
+      <small style="font-size: 12px"><i>Date Generated: ${date_time}</i></small>
+    </div>
+  </div>
+  <script>
+    window.onload = function() {
+      window.print();
+      // window.close();
+    };
+  <\/script>
+</body>
+</html>
 
-  // Write the HTML to the print window
-  printWindow.document.write(html);
-  printWindow.document.close();
-});
 
+      `;
 
-// $('#printReceipt').click(function() {
-//   var printWindow = window.open('', '_blank');
-//   var modalContent = $('#mod_Receipt .modal-content').clone(); // Clone the modal content
-
-//   // Remove any existing script tags to prevent execution in the print window
-//   modalContent.find('script').remove();
-
-//   var html = `
-//   <!DOCTYPE html>
-//   <html lang="en">
-//   <head>
-//   <meta charset="UTF-8">
-//   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-//   <title>Print Receipt</title>
-//   <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.0/css/bootstrap.min.css" rel="stylesheet">
-// <style>
-//     .container {
-//       display: flex;
-//       flex-direction: column;
-//       align-items: center;
-//     }
-//     .centered-text {
-//       display: flex;
-//       justify-content: center;
-//       width: 100%;
-//     }
-//     .left-align {
-//       text-align: left;
-//       width: 50%; /* Adjust this value as needed */
-//     }
-//     .right-align {
-//       text-align: right;
-//       width: 85%; /* Adjust this value as needed */
-//     }
-//     .price-container, .cash-container, .change-container {
-//       display: flex;
-//       justify-content: center;
-//       width: 100%;
-//     }
-//     .price, .cash, .change {
-//       margin-left: 50px;
-//     }
-//     .date-generated {
-//       text-align: center;
-//       margin-top: 20px; /* Adjust this value for spacing */
-//     }
-//   </style>
-//   <link rel="stylesheet" href="print.css" media="print">
-//   </head>
-//   <body>
-//     <div class="container">
-//   ${modalContent[0].outerHTML}
-//     </div>
-//   <script>
-//   window.onload = function() {
-//     window.print();
-//     // window.close();
-//   };
-//   <\/script>
-//   </body>
-//   </html>
-//   `;
-
-//   printWindow.document.write(html);
-//   printWindow.document.close();
-// });
-
+      printWindow.document.write(html);
+      printWindow.document.close();
+    });
 
 
   });
