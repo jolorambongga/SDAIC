@@ -96,9 +96,9 @@ checkAuth();
 <script>
     $(document).ready(function () {
 
-function formatDate(dateString) {
-    var weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    var date = new Date(dateString);
+        function formatDate(dateString) {
+            var weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            var date = new Date(dateString);
     var month = ('0' + (date.getMonth() + 1)).slice(-2); // Adding 1 because getMonth() returns 0-based index
     var day = ('0' + date.getDate()).slice(-2);
     var year = date.getFullYear();
@@ -119,14 +119,22 @@ function formatYear(dateString) {
 
 
 
-        function getDayOfWeek(selectedDate) {
-            var dateObj = new Date(selectedDate);
-            var dayOfWeek = dateObj.toLocaleDateString('en-US', { weekday: 'long' });
-            return dayOfWeek;
-        }
+function getDayOfWeek(selectedDate) {
+    var dateObj = new Date(selectedDate);
+    var dayOfWeek = dateObj.toLocaleDateString('en-US', { weekday: 'long' });
+    return dayOfWeek;
+}
 
 function populateTimeOptions(start_time, end_time, duration) {
     $('#appointment_time').empty(); // Clear existing options
+
+    // Add the initial disabled and selected option
+    var initialOption = $('<option>', {
+        value: '',
+        text: 'Select Time'
+    }).prop('disabled', true).prop('selected', true);
+
+    $('#appointment_time').append(initialOption);
 
     // Convert start_time and end_time to Date objects for comparison
     var startTime = new Date('1970-01-01T' + start_time);
@@ -139,14 +147,21 @@ function populateTimeOptions(start_time, end_time, duration) {
     // Format options in HH:MM:SS format
     var options = [];
     while (currentTime <= endTime) {
-        var hours = ('0' + currentTime.getHours()).slice(-2);
+        var hours = currentTime.getHours();
         var minutes = ('0' + currentTime.getMinutes()).slice(-2);
         var seconds = ('0' + currentTime.getSeconds()).slice(-2);
-        var optionTime = hours + ':' + minutes + ':' + seconds;
+
+        // Convert to 12-hour format
+        var period = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        hours = hours ? hours : 12; // If hours is 0, set to 12
+
+        var optionTime = ('0' + hours).slice(-2) + ':' + minutes + ':' + seconds;
+        var displayTime = hours + ':' + minutes + ' ' + period;
         
         options.push({
             value: optionTime, // Use full HH:MM:SS format for value
-            text: hours + ':' + minutes // Display in HH:MM format (if needed)
+            text: displayTime // Display in 12-hour format with AM/PM
         });
 
         // Move to next interval
@@ -164,11 +179,23 @@ function populateTimeOptions(start_time, end_time, duration) {
 
 
 
+
 // Event handler for updating appointment time options based on date selection
 // Event handler for updating appointment time options based on date selection
 $(document).on('change', '#appointment_date', function() {
+    updateDatePickerAvailability();
     var selectedDate = $(this).val();
     var service_id = $('#procedure-select').val();
+
+    var selected_date = new Date($(this).val());
+    var current_date = new Date();
+
+    // Check if selected date is in the past
+    if (selected_date < current_date) {
+        alert('Error - Invalid Date. All dates must be either in the present or future.');
+        $(this).datepicker('clearDates'); // Clear selected date
+        return;
+    }
 
     var appointment_date = formatYear(selectedDate); // Ensure this formats to YYYY-MM-DD
 
@@ -227,7 +254,7 @@ $(document).on('change', '#appointment_date', function() {
                 });
 
             } else {
-                alert(response.message); // Handle error or display message
+                console.log("ERROR IN DATE TIME SELECT", error); // Handle error or display message
             }
         },
         error: function(error) {
@@ -316,12 +343,20 @@ $(document).on('change', '#appointment_date', function() {
 
     // Event handler for procedure selection change
     $(document).on('change', '#procedure-select', function() {
+        updateDatePickerAvailability();
         var service_id = $(this).val();
         var doctor_id = $(this).find(':selected').data('doctor-id');
 
         console.log("Procedure selected:", service_id, doctor_id);
         saveSchedule(service_id, doctor_id); // Fetch and save schedule for selected procedure
+        resetSelection();
     });
+
+    function resetSelection() {
+        $('#request_image').val('');
+        $('#appointment_date').val('');
+        $('#appointment_time').val('');
+    }
 
     // Initial loading of procedures
     loadProcedures();
@@ -351,6 +386,7 @@ $(document).on('change', '#appointment_date', function() {
     $('.next-btn').click(function() {
         var $currentStep = $(this).closest('.form-step');
         if ($currentStep.attr('id') === 'step-1') {
+            updateDatePickerAvailability();
             if ($('#procedure-select').val() === null) {
                 alert('Please select a procedure before proceeding.');
                 return;
@@ -361,10 +397,18 @@ $(document).on('change', '#appointment_date', function() {
                 return;
             }
         } else if ($currentStep.attr('id') === 'step-3') {
-            if ($('#appointment_date').val() === '' || $('#appointment_time').val() === null) {
+            if ($('#appointment_date').val() === '' || $('#appointment_time option:selected').text() === 'Select Time') {
                 alert('Please select a date and time before proceeding.');
+                // var selectedDate = new Date($('#appointment_date').data().date);
+                // var currentDate = new Date();
+
+                // if (selectedDate < currentDate) {
+                //     alert('Error - Invalid Date. All dates must be either in the present or future.');
+                //     $('#appointment_date').datetimepicker('clear');
+                // }
                 return;
             }
+
             var appointmentTime = new Date($('#appointment_date').val() + 'T' + $('#appointment_time').val());
             var now = new Date();
             now.setHours(now.getHours() + 1);
