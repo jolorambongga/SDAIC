@@ -140,13 +140,20 @@
       $('#mod_Receipt').modal('show');
     });
 
-$('#printReceipt').click(function() {
+    $('#printReceipt').click(function() {
   var printWindow = window.open('', '_blank');
-  var modalContent = $('#mod_Receipt .modal-content').clone(); // Clone the modal content
 
-  // Remove any existing script tags to prevent execution in the print window
-  modalContent.find('script').remove();
+  // Extract specific parts of the modal content
+  var patientName = $('#receiptPatientName').text();
+  var procedureType = $('#receiptProcedureType').text();
+  var appointmentDate = $('#receiptAppointmentDate').text();
+  var appointmentTime = $('#receiptAppointmentTime').text();
+  var price = $('#receiptPrice').text();
+  var cash = $('#receiptCash').text();
+  var change = $('#receiptChange').text();
+  var dateGenerated = $('#receiptDateGenerated').text();
 
+  // Construct the HTML for the print window
   var html = `
   <!DOCTYPE html>
   <html lang="en">
@@ -155,7 +162,8 @@ $('#printReceipt').click(function() {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Print Receipt</title>
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.0/css/bootstrap.min.css" rel="stylesheet">
-<style>
+  <link rel="stylesheet" href="print.css" media="print">
+  <style>
     .container {
       display: flex;
       flex-direction: column;
@@ -168,11 +176,11 @@ $('#printReceipt').click(function() {
     }
     .left-align {
       text-align: left;
-      width: 50%; /* Adjust this value as needed */
+      width: 50%;
     }
     .right-align {
       text-align: right;
-      width: 85%; /* Adjust this value as needed */
+      width: 85%;
     }
     .price-container, .cash-container, .change-container {
       display: flex;
@@ -184,28 +192,104 @@ $('#printReceipt').click(function() {
     }
     .date-generated {
       text-align: center;
-      margin-top: 20px; /* Adjust this value for spacing */
+      margin-top: 20px;
     }
   </style>
-  <link rel="stylesheet" href="print.css" media="print">
   </head>
   <body>
     <div class="container">
-  ${modalContent[0].outerHTML}
+      <p class="patient-name"><strong>Patient Name:</strong> ${patientName}</p>
+      <p><strong>Procedure Type:</strong> ${procedureType}</p>
+      <p><strong>Appointment Date:</strong> ${appointmentDate}</p>
+      <p><strong>Appointment Time:</strong> ${appointmentTime}</p>
+      <hr>
+      <p class="text-end right-align price"><strong>Price:</strong> ${price}</p>
+      <p class="text-end right-align cash"><strong>Cash:</strong> ${cash}</p>
+      <p class="text-end right-align change"><strong>Change:</strong> ${change}</p>
+      <small><p class="text-center date-generated"><strong>Date Generated:</strong> ${dateGenerated}</p></small>
     </div>
-  <script>
-  window.onload = function() {
-    window.print();
-    // window.close();
-  };
-  <\/script>
+    <script>
+      window.onload = function() {
+        window.print();
+        // window.close();
+      };
+    <\/script>
   </body>
   </html>
   `;
 
+  // Write the HTML to the print window
   printWindow.document.write(html);
   printWindow.document.close();
 });
+
+
+// $('#printReceipt').click(function() {
+//   var printWindow = window.open('', '_blank');
+//   var modalContent = $('#mod_Receipt .modal-content').clone(); // Clone the modal content
+
+//   // Remove any existing script tags to prevent execution in the print window
+//   modalContent.find('script').remove();
+
+//   var html = `
+//   <!DOCTYPE html>
+//   <html lang="en">
+//   <head>
+//   <meta charset="UTF-8">
+//   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+//   <title>Print Receipt</title>
+//   <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.0/css/bootstrap.min.css" rel="stylesheet">
+// <style>
+//     .container {
+//       display: flex;
+//       flex-direction: column;
+//       align-items: center;
+//     }
+//     .centered-text {
+//       display: flex;
+//       justify-content: center;
+//       width: 100%;
+//     }
+//     .left-align {
+//       text-align: left;
+//       width: 50%; /* Adjust this value as needed */
+//     }
+//     .right-align {
+//       text-align: right;
+//       width: 85%; /* Adjust this value as needed */
+//     }
+//     .price-container, .cash-container, .change-container {
+//       display: flex;
+//       justify-content: center;
+//       width: 100%;
+//     }
+//     .price, .cash, .change {
+//       margin-left: 50px;
+//     }
+//     .date-generated {
+//       text-align: center;
+//       margin-top: 20px; /* Adjust this value for spacing */
+//     }
+//   </style>
+//   <link rel="stylesheet" href="print.css" media="print">
+//   </head>
+//   <body>
+//     <div class="container">
+//   ${modalContent[0].outerHTML}
+//     </div>
+//   <script>
+//   window.onload = function() {
+//     window.print();
+//     // window.close();
+//   };
+//   <\/script>
+//   </body>
+//   </html>
+//   `;
+
+//   printWindow.document.write(html);
+//   printWindow.document.close();
+// });
 
 
 
