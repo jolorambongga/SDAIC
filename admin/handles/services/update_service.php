@@ -55,14 +55,14 @@ try {
             $end_time = $schedule['end_time'];
 
             $sql_insert = "INSERT INTO tbl_ServiceSched (service_id, day_of_week, start_time, end_time)
-                           VALUES (:service_id, :day_of_week, :start_time, :start_time)";
+                           VALUES (:service_id, :day_of_week, :start_time, :end_time)";
 
             $stmt_insert = $pdo->prepare($sql_insert);
 
             $stmt_insert->bindParam(':service_id', $service_id, PDO::PARAM_INT);
             $stmt_insert->bindParam(':day_of_week', $day_of_week, PDO::PARAM_STR);
             $stmt_insert->bindParam(':start_time', $start_time, PDO::PARAM_STR);
-            $stmt_insert->bindParam(':start_time', $start_time, PDO::PARAM_STR);
+            $stmt_insert->bindParam(':end_time', $end_time, PDO::PARAM_STR);
 
             $stmt_insert->execute();
         }
