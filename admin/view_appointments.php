@@ -460,6 +460,7 @@ include_once "header.php";
           dataType: 'JSON',
           success: function(response) {
             console.log("SUCESS REJECT BTN CLICK",response);
+            console.log(response);
             loadFilteredAppointments();
             $('#mod_Reject').modal('hide');
             $('#reject_user_input').val();

@@ -9,7 +9,7 @@ include_once('header.php');
 
 <body>
   <!-- nav bar -->
-  <div style="background-image: url(https://wallpaperaccess.com/full/1282798.jpg); width: 100%; height: 700px; overflow-x: hidden;">
+  <div id="main_image" style="background-image: url(https://wallpaperaccess.com/full/1282798.jpg); width: 100%; height: 700px; overflow-x: hidden;">
     <div class="my-wrapper">
       <div class="navbar navbar-expand-lg" style="margin-bottom: 45px; margin-top: 50px;">
         <div class="container-fluid justify-content-center">
@@ -41,7 +41,7 @@ include_once('header.php');
   </div>
 
   <div style="text-align: center; margin-bottom: 60px; background-color: white; overflow-x: hidden;">
-    <img src="https://cdn.discordapp.com/attachments/489358237343416320/1254446687850729512/step.png?ex=66798604&is=66783484&hm=9a73d53787e6a67ea08b03b820667b1c901ebc14c8456c9eb9eabc24e9db31e1&" alt="steps" style="width: 800px; height: auto;">
+    <img src="https://i.ibb.co/6B6XBk1/step.png" alt="steps" style="width: 800px; height: auto;">
 </div>
 
 
@@ -122,8 +122,8 @@ include_once('header.php');
             var data = response.data;
 
             // Update background image
-            if (data.background_image) {
-              $('body').css('background-image', 'url(' + data.background_image + ')');
+            if (data.main_image) {
+              $('#main_image').css('background-image', 'url(' + data.main_image + ')');
             }
 
             // Update about_us content
@@ -135,11 +135,6 @@ include_once('header.php');
               $('.about-us-image').html(about_us_image_html);
             }
 
-            // Update clinic hours if available
-            if (data.avail_day && data.avail_start_time && data.avail_end_time) {
-              var clinic_hours_html = '<p>Availability: ' + data.avail_day + ' ' + data.avail_start_time + ' - ' + data.avail_end_time + '</p>';
-              $('#clinic_hours').html(clinic_hours_html);
-            }
           } else {
             // Handle empty or error response
             $('#about_us').text('No data available.');
@@ -171,12 +166,11 @@ include_once('header.php');
         `;
         $('#our_services').append(read_services_html);
 
-        // Split dates and times
-        const dates = data.concat_date.split(',');
-        const times = data.concat_time.split(',');
+        
+        const sched = !data.doctor_id ? service_sched : doctor_sched;
 
         let scheduleHtml = `<hr><div><strong>${data.service_name}</strong><br>`;
-        dates.forEach((date, index) => {
+        sched.forEach((date, index) => {
           const time = times[index];
           scheduleHtml += `<span>${date} (${time})</span><br>`;
         });

@@ -162,7 +162,7 @@ try {
 
 	header('Content-Type: application/json');
 
-	echo json_encode(array("status" => "success", "process" => "reject appointment", "data" => $data));
+	echo json_encode(array("status" => "success", "process" => "reject appointment", "data" => $data, "reason" => $reason));
 
 } catch (PDOException $e) {
 	echo json_encode(array("status" => "error", "message" => $e->getMessage(), "process" => "reject appointment", "report" => "catch reached"));

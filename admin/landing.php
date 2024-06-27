@@ -251,6 +251,7 @@ include_once('header.php');
             console.log("SAVE LANDING RESPONSE", response);
             // Handle success response
             $('#mod_addLanding .btn-close').click();
+            $('#current_landing').empty();
             loadLandingInfo();
           },
           error: function(error) {
