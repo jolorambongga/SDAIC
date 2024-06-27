@@ -15,7 +15,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button id="submitResult" type="button" class="btn btn-primary">Submit</button>
+        <button id="submitResult" type="button" class="btn btn-primary">Send Email</button>
       </div>
     </div>
   </div>
@@ -37,13 +37,16 @@
 
     $(document).on('click', '#submitResult', function() {
       var appointment_id = $(this).data('appointment-id');
+      var additional_note = $('#note').val();
       console.log("submit", appointment_id);
       $.ajax({
         type: 'POST',
-        url: '../handles/appointments/result_ready.php',
-        data: {appointment_id: appointment_id},
+        url: 'handles/appointments/result_ready.php',
+        data: {appointment_id: appointment_id, additional_note: additional_note},
         dataType: 'json',
         success: function(response) {
+          $('#mod_Result').modal('hide');
+          $('#note').val('');
           console.log(response);
         },
         error: function(error) {
